@@ -2,12 +2,12 @@
 #
 # ngb-sign-in.pl
 # The "Sign In" half of the Nizkor Guest Book
-$version = "1.0";
+$version = "1.01";
 # Requires perl 5;  tested only with perl5.001m.
 #
 # Written by Jamie McCarthy (jamie@nizkor.almanac.bc.ca)
 # for the Nizkor Project (http://www.almanac.bc.ca/).
-# Copyright 1995 Jamie McCarthy.
+# Copyright 1995-96 Jamie McCarthy.
 #
 # This source code may be publicly distributed by any means,
 # as long as the above authorship and copyright notice is kept
@@ -18,7 +18,16 @@ $version = "1.0";
 # (1) Most of the existing guest books are messy and ugly;
 # (2) I found none that required confirmation to submit entries,
 #     so they were all quite susceptible to hacker mischief.
-
+#
+# Changes to 1.01:
+#
+# Some textual changes, mainly putting the name/email/homepage entry
+#     boxes first to keep people from putting that info into the
+#     main textarea.
+# Also check REMOTE_USER environment variable to try to get an email
+#     address.
+# Time zone correction variable.  You'd think someone would have put
+#     this into a standard perl CGI library by now...
 
 
    # If you don't have cgi-lib.pl, check out
@@ -36,6 +45,12 @@ require "cgi-lib.pl";
 ###################################################################
 # constants you must modify for your web site
 ###################################################################
+
+   # This value is only valid if you're using UnixWare 2.0 (and,
+   # obviously, if you're in Canada's Pacific time zone!).  This
+   # format is more common:  "PST8PDT".  To find the appropriate
+   # value for your site, 'echo $TZ' at your shell prompt.
+$ENV{"TZ"} = ":Canada/Pacific";
 
 $upToLink = <<END_OF_UP_TO_LINK;
 <p align=center>[ up to <a href="http://www.almanac.bc.ca/">Home Page</a> ]
@@ -81,9 +96,10 @@ appear in the
 <a href="$guestBookDirURL$guestBookFilename">guest book</a>
 within 48 hours.
 
-<p>Polite comments and/or constructive criticism are welcome from anyone.
-If you have particular questions that you'd like an answer to, please
-email us at
+<p>Polite comments and/or constructive criticism are welcome from
+anyone. One submission per customer, please, and no advertising.  If you
+have particular questions that you'd like an answer to, please email us
+at
 <a href="mailto:$emailContact">$emailContact</a>.
 
 <p><strong>Double-space to separate your paragraphs.</strong> Or, if you
@@ -119,10 +135,8 @@ $anonymousComment = $allowAnonymous
 $formMain = <<END_OF_FORM_MAIN;
 <form method=post>
 
-<p><textarea name="comments" rows=10 cols=64></textarea>
-
-<p>Please leave us your name, email address if any, and home page URL
-if any.  $anonymousComment
+<p>First, please leave us your name, email address if any, and home page
+URL if any.  $anonymousComment
 
 <table>
 <tr><td align=right>
@@ -132,6 +146,11 @@ if any.  $anonymousComment
 <tr><td align=right>
 <p>Home Page URL: <td><input type=text name="url" size=50 maxlength=199>
 </table>
+
+<p>The date will be added automatically.
+<p>Enter your comments here.
+
+<p><textarea name="comments" rows=10 cols=64></textarea>
 
 <p><input type=submit value="Submit Comments">
 <input type=reset value="Reset Form">
@@ -377,6 +396,10 @@ sub processForm
       $ip = &stripSingleline($ip);
          # see http://www.best.com/~hedlund/cgi-faq/faq-environment.html
       $browserEmail = $ENV{'HTTP_FROM'};
+      if (!$browserEmail && $ENV{'REMOTE_USER'}) {
+         $browserEmail = $ENV{'REMOTE_USER'} . "\@$ip";
+         $browserEmail .= " (from REMOTE_ADDR, IP may be invalid)" if !$ENV{'REMOTE_HOST'};
+      }
       $browserEmail = &stripSingleline($browserEmail) if $browserEmail;
       if ($url !~ m#^http://#) {
          if ($url =~ m#^www\.#) {

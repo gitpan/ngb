@@ -2,7 +2,7 @@ The Nizkor Guest Book
 
 Written by Jamie McCarthy (jamie@nizkor.almanac.bc.ca)
 for the Nizkor Project (http://www.almanac.bc.ca/).
-Copyright 1995 Jamie McCarthy.
+Copyright 1995-96 Jamie McCarthy.
 
 The source code for the Nizkor Guest Book may be publicly distributed
 by any means, as long as the above authorship and copyright notice is
@@ -86,8 +86,8 @@ Got all that?  Good!  Here are the installation instructions.
 
 1. With your favorite editor, open up both ngb-confirm.pl and
    ngb-sign-in.pl and configure all the constants to be the way you
-   like them.  They're all well-marked at the top of each file, you
-   can't miss them.
+   like them.  They're all well-marked near the top of each file,
+   you can't miss them.
 
    If you don't know Perl, this may still be a bit intimidating.
    Here's all you need to know.  Any line that starts with "#" is a
@@ -109,7 +109,7 @@ Got all that?  Good!  Here are the installation instructions.
    make sure that if you put any quotation marks into double-quoted
    text, you escape them with a backslash, as in:
 
-      $myConstant = "\"I love you,\" he said.";
+      $myConstant = "\"What's up Doc?\" he asked.";
 
    And with the line-oriented quoting, only alter the text between
    the END_OF_BLAH_BLAH lines, not those lines themselves.
@@ -117,7 +117,7 @@ Got all that?  Good!  Here are the installation instructions.
    Note that there will be no warnings if you fail to edit any of
    the variables -- things will just be screwy.  You may have a
    link to the Nizkor site, instead of your own, for example.
-   Just double-check everything.
+   Just double-check how it all looks on the web, when you're done.
    
    Note that $guestBookPrivateDir is the directory referred to in
    requirement 4a above.
@@ -125,12 +125,14 @@ Got all that?  Good!  Here are the installation instructions.
 2. Copy ngb-sign-in.pl to your public cgi-bin directory, referred to
    in requirement 4b above.
 
-3. Copy ngb-guest-book.pl to your private cgi-bin directory, referred
+3. Copy ngb-confirm.pl to your private cgi-bin directory, referred
    to in requirement 4c above.
 
 4. Run ngb-confirm.pl, either by accessing it through a web browser,
    or by running it from the command line.  This will create the guest
-   book file.
+   book file.  (I could have included a dummy guest book file
+   separately, but it's less troublesome to put it in the ngb-confirm
+   script itself.)
    
    For example, pretend it is in the directory /usr/fred/priv-cgi-bin/,
    which is set up in the HTTP daemon's configuration file to be
