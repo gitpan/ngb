@@ -1,0 +1,170 @@
+The Nizkor Guest Book
+
+Written by Jamie McCarthy (jamie@nizkor.almanac.bc.ca)
+for the Nizkor Project (http://www.almanac.bc.ca/).
+Copyright 1995 Jamie McCarthy.
+
+The source code for the Nizkor Guest Book may be publicly distributed
+by any means, as long as the above authorship and copyright notice is
+kept intact.  If a modified version is distributed, please explain
+what changes have been made.  It may be used free of both charge and
+obligation.
+
+This guest book is a bit different from others I've seen, because it
+protects against hacker invasion.  It doesn't automatically post every
+entry to the public guest book page.  Rather, it archives them in a
+private directory until the webmaster(s) get(s) around to confirming
+them.  (Or deleting them, or moving them to a "special" page for
+safekeeping.)  Furthermore, hacker mischief is discouraged by limiting
+the number of entries archived to 100, and by limiting the size of
+each entry to 16K, so the absolute worst they can do is use up 1,600K
+on your hard drive.
+
+It's also designed to be clean and dignified;  no fancy formatting of
+incoming entries is allowed, and HTML codes are stripped, so that
+people can't put giant pictures of Barney into your guest book.  See
+<http://www.teleport.com/~merlyn/> for why it's a good idea to
+Barney-proof your guest book.  Only <p> and <a> tags are allowed.
+
+If you haven't yet seen the guest book in action, you can see what it
+looks like to the public, at the Nizkor Project:
+<http://www.almanac.bc.ca/guest-book.html>
+
+You can't see the private "webmaster-only" half of it -- the part
+where users' entries are confirmed and actually placed on the guest
+book -- because, well, because that part is private.  If you want
+to see what it looks like, you'll have to install your own copy!
+
+To install your own copy, you'll need these requirements:
+
+                           REQUIREMENTS
+
+1. Access to a computer (unix strongly recommended) that is running
+   perl5 (5.001m recommended).  You may be able to convince the code
+   to work on a non-unix system or on perl version 4, but don't come
+   to me for help.
+
+2. cgi-lib.pl and, if it's not already installed, sufficient security
+   clearance to install it.  If you don't know what cgi-lib.pl is,
+   visit <http://www.bio.cam.ac.uk/web/form.html>.  If you don't know
+   whether you have it, look in /usr/local/lib/perl5 and maybe
+   /usr/local/lib.
+
+3. A bit of patience, to change all the constants over from my system
+   to yours.  This is pretty straightforward.
+
+4. Sufficient security clearance or permission from your sysadmin to
+   do each of the following:
+
+   a. To create a "private" directory that your HTTP daemon can access.
+      This can be anywhere in the file system, and should not be
+      readable by the outside world (unless you don't care if people
+      read your incoming entries and your "special guest book," see
+      below).  Note that unix HTTP daemons (NCSA, for example) often
+      run as user "root" but spawn subprocesses to do real work;  the
+      user/group IDs of those subprocesses depend on how the HTTP
+      daemon is configured.
+   
+   b. To install a public cgi-bin program.  If you don't know what a
+      cgi-bin is, see
+      <http://www.yahoo.com/Computers_and_Internet/Internet/World_Wide_Web/CGI___Common_Gateway_Interface/>.
+      If you don't know whether you have that clearance, ask around;
+      if you still don't know, politely ask your system administrator.
+   
+   c. To install a private cgi-bin program.  On NCSA httpd, creating
+      any private directory means adding a line to the configuration
+      file, killing the httpd process, and restarting it. I imagine
+      it's similarly painful with other software.  If you're not the
+      sysadmin, don't be surprised if your sysadmin balks at doing
+      this.  It also requires a bit of knowledge of how user
+      authentication works, which for NCSA httpd is pretty simple; see
+      <http://hoohoo.ncsa.uiuc.edu/docs/setup/admin/UserManagement.html>.
+
+Got all that?  Good!  Here are the installation instructions.
+
+                           INSTRUCTIONS
+
+1. With your favorite editor, open up both ngb-confirm.pl and
+   ngb-sign-in.pl and configure all the constants to be the way you
+   like them.  They're all well-marked at the top of each file, you
+   can't miss them.
+
+   If you don't know Perl, this may still be a bit intimidating.
+   Here's all you need to know.  Any line that starts with "#" is a
+   comment.  Any word that starts with "$" is a constant (or a
+   variable).  And, I put text into a comment in two ways.  One way
+   is with double quotation marks, as in:
+
+      $myConstant = "the text";
+
+   Or, with line-oriented quoting:
+
+      $myConstant = <<END_OF_MY_CONSTANT;
+      first line of the text
+      second line of the text
+      third line of the text
+      END_OF_MY_CONSTANT
+
+   It may look confusing at first, but you'll get used to it.  Just
+   make sure that if you put any quotation marks into double-quoted
+   text, you escape them with a backslash, as in:
+
+      $myConstant = "\"I love you,\" he said.";
+
+   And with the line-oriented quoting, only alter the text between
+   the END_OF_BLAH_BLAH lines, not those lines themselves.
+   
+   Note that there will be no warnings if you fail to edit any of
+   the variables -- things will just be screwy.  You may have a
+   link to the Nizkor site, instead of your own, for example.
+   Just double-check everything.
+   
+   Note that $guestBookPrivateDir is the directory referred to in
+   requirement 4a above.
+
+2. Copy ngb-sign-in.pl to your public cgi-bin directory, referred to
+   in requirement 4b above.
+
+3. Copy ngb-guest-book.pl to your private cgi-bin directory, referred
+   to in requirement 4c above.
+
+4. Run ngb-confirm.pl, either by accessing it through a web browser,
+   or by running it from the command line.  This will create the guest
+   book file.
+   
+   For example, pretend it is in the directory /usr/fred/priv-cgi-bin/,
+   which is set up in the HTTP daemon's configuration file to be
+   <http://www.myhost.edu/fred-priv-cgi-bin/>. The URL to access it
+   from a web browser would be
+   <http://www.myhost.edu/fred-priv-cgi-bin/ngb-confirm.pl>.  When you
+   access that web page for the first time, you'll see a notice telling
+   you that your guest book has been created.
+
+   Or, you could type, from the unix command line,
+   "/usr/fred/priv-cgi-bin/ngb-confirm.pl", which would give you a lot
+   of HTML code, and somewhere in that code would be the same notice.
+
+5. Call up your guest book file on your favorite web browser and see if
+   you like it.  If not, edit it.  You can edit it however you please,
+   as long as you don't change the line:
+      
+   <!-- insert new entries here and do not edit this line -->
+   
+6. Test the sign-in script on your favorite browser.  If you configured
+   all the constants correctly in instruction 1, there should be a link
+   to that script right on the guest-book.html page.
+
+   If not, try accessing it manually.  For example, pretend the sign-in
+   script is in the directory /usr/fred/pub-cgi/bin/, which is set up
+   to be <http://www.myhost.edu/fred-pub-cgi-bin/>. The URL to access
+   it from a web browser would be
+   <http://www.myhost.edu/fred-pub-cgi-bin/ngb-sign-in.pl>.
+   
+   Run through the sign-in process, and be sure it gives you the
+   message about your entry being added.  Then go to the confirmation
+   URL and be sure your entry shows up correctly.  Then delete your
+   entry (or add it, if you like).  That's it!  You now have a working
+   guest book!
+
+Enjoy.  If you have any questions, feel free to email me at
+jamie@nizkor.almanac.bc.ca.
